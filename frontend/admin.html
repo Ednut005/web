@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVAS SMS - Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f0f1a;
+            color: #fff;
+        }
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 2rem 1rem;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #667eea;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 12px;
+            cursor: pointer;
+            color: #aaa;
+        }
+        .nav-item:hover, .nav-item.active {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+        }
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: #1a1a2e;
+            border-radius: 15px;
+            padding: 1.5rem;
+        }
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #667eea;
+        }
+        .table-container {
+            background: #1a1a2e;
+            border-radius: 15px;
+            overflow-x: auto;
+            padding: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #2a2a3e;
+        }
+        th {
+            color: #667eea;
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 0.2rem;
+        }
+        .btn-danger { background: #ff4757; color: white; }
+        .btn-success { background: #00b894; color: white; }
+        .btn-primary { background: #667eea; color: white; }
+        .form-card {
+            background: #1a1a2e;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 0.8rem;
+            background: #0f0f1a;
+            border: 1px solid #2a2a3e;
+            border-radius: 8px;
+            color: white;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">EVAS ADMIN</div>
+        <div class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</div>
+        <div class="nav-item" onclick="showSection('users')"><i class="fas fa-users"></i> Users</div>
+        <div class="nav-item" onclick="showSection('transactions')"><i class="fas fa-chart-line"></i> Transactions</div>
+        <div class="nav-item" onclick="showSection('discounts')"><i class="fas fa-ticket-alt"></i> Discount Codes</div>
+        <div class="nav-item" onclick="showSection('broadcast')"><i class="fas fa-broadcast-tower"></i> Broadcast</div>
+        <div class="nav-item" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1 id="page-title">Dashboard</h1>
+            <div><i class="fas fa-user-shield"></i> Admin: Administrator</div>
+        </div>
+
+        <div id="dashboard-section">
+            <div class="stats-grid" id="stats-grid"></div>
+            <div class="form-card">
+                <h3>Quick Actions</h3>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="showSection('broadcast')">Send Broadcast</button>
+                    <button class="btn btn-success" onclick="showSection('discounts')">Generate Discount Code</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="users-section" style="display: none;">
+            <div class="form-card">
+                <h3>All Users</h3>
+                <div class="table-container" id="users-table"></div>
+            </div>
+        </div>
+
+        <div id="transactions-section" style="display: none;">
+            <div class="form-card">
+                <h3>All Transactions</h3>
+                <div class="table-container" id="transactions-table"></div>
+            </div>
+        </div>
+
+        <div id="discounts-section" style="display: none;">
+            <div class="form-card">
+                <h3>Generate Discount Code</h3>
+                <div class="form-group">
+                    <label>Discount Percentage</label>
+                    <input type="number" id="discount-percent" placeholder="Enter 1-100">
+                </div>
+                <button class="btn btn-primary" onclick="generateDiscount()">Generate Code</button>
+                <div id="generated-code" style="margin-top: 1rem; padding: 1rem; background: #0f0f1a; border-radius: 8px; display: none;"></div>
+            </div>
+        </div>
+
+        <div id="broadcast-section" style="display: none;">
+            <div class="form-card">
+                <h3>Broadcast Message</h3>
+                <div class="form-group">
+                    <label>Message to all users</label>
+                    <textarea id="broadcast-message" rows="5" style="width: 100%; padding: 0.8rem; background: #0f0f1a; border: 1px solid #2a2a3e; border-radius: 8px; color: white;"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="sendBroadcast()">Send Broadcast</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '';
+
+        async function fetchStats() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/admin/stats`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const stats = await response.json();
+                
+                document.getElementById('stats-grid').innerHTML = `
+                    <div class="stat-card"><div class="value">${stats.totalUsers}</div><div>Total Users</div></div>
+                    <div class="stat-card"><div class="value">${stats.totalResellers}</div><div>VIP Resellers</div></div>
+                    <div class="stat-card"><div class="value">${stats.totalBanned}</div><div>Banned Users</div></div>
+                    <div class="stat-card"><div class="value">₦${(stats.totalSales || 0).toLocaleString()}</div><div>Total Sales</div></div>
+                `;
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        }
+
+        async function fetchUsers() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/admin/users`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const users = await response.json();
+                
+                let html = '<table><tr><th>Username</th><th>Email</th><th>Country</th><th>Balance</th><th>Status</th><th>Actions</th></tr>';
+                users.forEach(user => {
+                    html += `<tr>
+                        <td>${user.username}</td>
+                        <td>${user.email}</td>
+                        <td>${user.country}</td>
+                        <td>${user.currency === 'NGN' ? '₦' : '$'}${user.balance}</td>
+                        <td>${user.isBanned ? 'Banned' : 'Active'} ${user.isReseller ? '(VIP)' : ''}</td>
+                        <td>
+                            <button class="btn btn-danger" onclick="banUser('${user.id}')">Ban</button>
+                            <button class="btn btn-success" onclick="makeReseller('${user.id}')">Make VIP</button>
+                        </td>
+                    </tr>`;
+                });
+                html += '</table>';
+                document.getElementById('users-table').innerHTML = html;
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        }
+
+        async function banUser(userId) {
+            try {
+                const token = localStorage.getItem('token');
+                await fetch(`${API_URL}/api/admin/ban-user`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ userId, ban: true })
+                });
+                alert('User banned');
+                fetchUsers();
+            } catch (error) {
+                alert('Error banning user');
+            }
+        }
+
+        async function makeReseller(userId) {
+            const days = prompt('Enter number of VIP days (7 or 30):', '30');
+            if (days) {
+                try {
+                    const token = localStorage.getItem('token');
+                    await fetch(`${API_URL}/api/admin/make-reseller`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ userId, days: parseInt(days) })
+                    });
+                    alert('VIP status granted');
+                    fetchUsers();
+                } catch (error) {
+                    alert('Error making VIP');
+                }
+            }
+        }
+
+        async function generateDiscount() {
+            const percentage = document.getElementById('discount-percent').value;
+            if (!percentage || percentage < 1 || percentage > 100) {
+                alert('Enter percentage 1-100');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/admin/generate-discount`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ percentage: parseInt(percentage) })
+                });
+                const data = await response.json();
+                document.getElementById('generated-code').style.display = 'block';
+                document.getElementById('generated-code').innerHTML = `Discount Code: <strong>${data.code}</strong>`;
+            } catch (error) {
+                alert('Error generating code');
+            }
+        }
+
+        async function sendBroadcast() {
+            const message = document.getElementById('broadcast-message').value;
+            if (!message) {
+                alert('Enter a message');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                await fetch(`${API_URL}/api/admin/broadcast`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ message })
+                });
+                alert('Broadcast sent!');
+                document.getElementById('broadcast-message').value = '';
+            } catch (error) {
+                alert('Error sending broadcast');
+            }
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+            
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.getElementById('users-section').style.display = 'none';
+            document.getElementById('transactions-section').style.display = 'none';
+            document.getElementById('discounts-section').style.display = 'none';
+            document.getElementById('broadcast-section').style.display = 'none';
+            
+            document.getElementById(`${section}-section`).style.display = 'block';
+            document.getElementById('page-title').innerText = section.charAt(0).toUpperCase() + section.slice(1);
+            
+            if (section === 'dashboard') fetchStats();
+            if (section === 'users') fetchUsers();
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('isAdmin');
+            window.location.href = '/admin-login.html';
+        }
+
+        const token = localStorage.getItem('token');
+        const isAdmin = localStorage.getItem('isAdmin');
+        if (!token || !isAdmin) {
+            window.location.href = '/admin-login.html';
+        } else {
+            fetchStats();
+        }
+    </script>
+</body>
+</html>
