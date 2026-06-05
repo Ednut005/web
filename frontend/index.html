@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>EVAS SMS - Premium Virtual Numbers for SMS Verification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Animated Gradient Background */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            animation: gradientShift 15s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glassmorphism Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .logo-text {
+            background: linear-gradient(135deg, #fff, #667eea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #aaa;
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: #667eea;
+        }
+
+        .telegram-btn {
+            background: #0088cc;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+
+        .telegram-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-logout {
+            background: rgba(255, 71, 87, 0.2);
+            border: 1px solid #ff4757;
+            color: #ff4757;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: #ff4757;
+            color: white;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #aaa;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .feature-badge {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid rgba(102, 126, 234, 0.5);
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Auth Cards */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+            padding: 2rem;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 480px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .auth-card h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #aaa;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #aaa;
+        }
+
+        .auth-switch a {
+            color: #667eea;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Dashboard */
+        .dashboard-header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .welcome-text h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-text p {
+            color: #aaa;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            text-align: center;
+        }
+
+        .balance-card h3 {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .balance-card .amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        /* Action Buttons Grid */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-5px);
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .action-btn i {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-btn h4 {
+            margin-bottom: 0.25rem;
+        }
+
+        .action-btn p {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(20, 20, 40, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 2rem;
+            max-width: 550px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+        }
+
+        .close-modal {
+            cursor: pointer;
+            font-size: 1.8rem;
+            transition: transform 0.3s;
+        }
+
+        .close-modal:hover {
+            transform: scale(1.1);
+        }
+
+        /* Custom Amount Input */
+        .custom-amount-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .custom-amount-input input {
+            flex: 1;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+        }
+
+        /* Payment Method Badges */
+        .payment-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            margin: 0.25rem;
+        }
+
+        .paystack-badge {
+            background: rgba(0, 200, 100, 0.2);
+            border: 1px solid #00c864;
+            color: #00c864;
+        }
+
+        .flutterwave-badge {
+            background: rgba(30, 100, 200, 0.2);
+            border: 1px solid #1e64c8;
+            color: #1e64c8;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .toast.success { border-left-color: #00b894; }
+        .toast.error { border-left-color: #ff4757; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container { flex-direction: column; text-align: center; }
+            .hero h1 { font-size: 2rem; }
+            .dashboard-header { flex-direction: column; text-align: center; }
+            .action-buttons { grid-template-columns: 1fr; }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.8rem;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar" style="display: none;">
+        <div class="nav-container">
+            <div class="logo" onclick="showDashboard()">
+                <div class="logo-icon">📱</div>
+                <span class="logo-text">EVAS SMS</span>
+            </div>
+            <div class="nav-menu">
+                <a class="nav-link" onclick="showDashboard()"><i class="fas fa-home"></i> Dashboard</a>
+                <a class="nav-link" onclick="showBuySms()"><i class="fas fa-shopping-cart"></i> Buy SMS</a>
+                <a class="nav-link" onclick="showHistory()"><i class="fas fa-history"></i> History</a>
+                <a class="nav-link" id="admin-link" style="display: none;" onclick="goToAdmin()"><i class="fas fa-shield-alt"></i> Admin</a>
+                <a href="https://t.me/evas_sms_bot" target="_blank" class="telegram-btn"><i class="fab fa-telegram"></i> Telegram Bot</a>
+                <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" id="app">
+        <!-- Auth Section -->
+        <div id="auth-section">
+            <div class="hero">
+                <span class="feature-badge"><i class="fas fa-bolt"></i> Premium SMS Verification</span>
+                <h1>Virtual Numbers<br>For SMS Verification</h1>
+                <p>Get temporary phone numbers to receive SMS codes for WhatsApp, Telegram, TikTok, Instagram, and 50+ more services.</p>
+                <div style="margin-top: 1rem;">
+                    <span class="payment-badge paystack-badge"><i class="fas fa-credit-card"></i> Paystack (Nigeria)</span>
+                    <span class="payment-badge flutterwave-badge"><i class="fas fa-globe"></i> Flutterwave (International)</span>
+                </div>
+            </div>
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h2>Get Started</h2>
+                    <div id="login-form">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Username</label>
+                            <input type="text" id="login-username" placeholder="Enter your username">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> Password</label>
+                            <input type="password" id="login-password" placeholder="Enter your password">
+                        </div>
+                        <button class="btn-primary" onclick="login()"><i class="fas fa-arrow-right"></i> Login</button>
+                        <div class="auth-switch">
+                            Don't have an account? <a onclick="showRegister()">Create Account</a>
+                        </div>
+                    </div>
+                    <div id="register-form" style="display: none;">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Username</label>
+                            <input type="text" id="reg-username" placeholder="Choose a username">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-envelope"></i> Email</label>
+                            <input type="email" id="reg-email" placeholder="Enter your email">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-map-marker-alt"></i> Country</label>
+                            <select id="reg-country">
+                                <option value="NG">🇳🇬 Nigeria (NGN - Paystack)</option>
+                                <option value="US">🇺🇸 United States (USD - Flutterwave)</option>
+                                <option value="GB">🇬🇧 United Kingdom (GBP - Flutterwave)</option>
+                                <option value="CA">🇨🇦 Canada (CAD - Flutterwave)</option>
+                                <option value="KE">🇰🇪 Kenya (KES - Flutterwave)</option>
+                                <option value="GH">🇬🇭 Ghana (GHS - Flutterwave)</option>
+                                <option value="UG">🇺🇬 Uganda (UGX - Flutterwave)</option>
+                                <option value="TZ">🇹🇿 Tanzania (TZS - Flutterwave)</option>
+                                <option value="ZA">🇿🇦 South Africa (ZAR - Flutterwave)</option>
+                                <option value="EU">🇪🇺 Europe (EUR - Flutterwave)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> Password</label>
+                            <input type="password" id="reg-password" placeholder="Create a password (min 6 chars)">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-check-circle"></i> Confirm Password</label>
+                            <input type="password" id="reg-confirm" placeholder="Confirm your password">
+                        </div>
+                        <button class="btn-primary" onclick="register()"><i class="fas fa-user-plus"></i> Create Account</button>
+                        <div class="auth-switch">
+                            Already have an account? <a onclick="showLogin()">Login</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" style="display: none;">
+            <div class="dashboard-header">
+                <div class="welcome-text">
+                    <h1>Welcome back, <span id="username-display"></span>! <i class="fas fa-smile-wink"></i></h1>
+                    <p>Your virtual SMS verification dashboard</p>
+                </div>
+                <div class="balance-card">
+                    <h3><i class="fas fa-wallet"></i> Available Balance</h3>
+                    <div class="amount" id="balance-display">$0.00</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-shopping-cart"></i>
+                    <div class="number" id="total-purchases">0</div>
+                    <p>Total Purchases</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <div class="number" id="total-referrals">0</div>
+                    <p>Referrals</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-gem"></i>
+                    <div class="number" id="vip-status">Regular</div>
+                    <p>Account Status</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <div class="number" id="active-orders">0</div>
+                    <p>Active Orders</p>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" onclick="showBuySms()">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h4>Buy SMS</h4>
+                    <p>Get virtual numbers</p>
+                </button>
+                <button class="action-btn" onclick="showTopUp()">
+                    <i class="fas fa-plus-circle"></i>
+                    <h4>Top Up</h4>
+                    <p>Add funds to wallet</p>
+                </button>
+                <button class="action-btn" onclick="showHistory()">
+                    <i class="fas fa-history"></i>
+                    <h4>History</h4>
+                    <p>View purchases</p>
+                </button>
+                <button class="action-btn" onclick="showReferral()">
+                    <i class="fas fa-link"></i>
+                    <h4>Referral</h4>
+                    <p>Earn 10% commission</p>
+                </button>
+                <button class="action-btn" onclick="showVIP()">
+                    <i class="fas fa-crown"></i>
+                    <h4>VIP Upgrade</h4>
+                    <p>Get 40% discounts</p>
+                </button>
+                <button class="action-btn" onclick="showSupport()">
+                    <i class="fas fa-headset"></i>
+                    <h4>Support</h4>
+                    <p>24/7 assistance</p>
+                </button>
+            </div>
+
+            <div id="dynamic-content"></div>
+        </div>
+    </div>
+
+    <!-- Buy SMS Modal -->
+    <div id="buy-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-mobile-alt"></i> Buy Virtual Number</h3>
+                <span class="close-modal" onclick="closeModal('buy-modal')">&times;</span>
+            </div>
+            <div id="buy-step-1">
+                <div class="form-group">
+                    <label><i class="fas fa-globe"></i> Select Country</label>
+                    <select id="country-select"></select>
+                </div>
+                <button class="btn-primary" onclick="fetchServices()"><i class="fas fa-arrow-right"></i> Continue</button>
+            </div>
+            <div id="buy-step-2" style="display: none;">
+                <div class="form-group">
+                    <label><i class="fas fa-app-store"></i> Select Service</label>
+                    <select id="service-select"></select>
+                </div>
+                <button class="btn-primary" onclick="purchaseNumber()"><i class="fas fa-shopping-cart"></i> Purchase Now</button>
+                <button class="btn-primary" style="background: #6c757d; margin-top: 0.5rem;" onclick="goBackToCountries()"><i class="fas fa-arrow-left"></i> Back</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Up Modal -->
+    <div id="topup-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> Top Up Wallet</h3>
+                <span class="close-modal" onclick="closeModal('topup-modal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-money-bill-wave"></i> Select Amount</label>
+                <select id="amount-select">
+                    <option value="500">₦500</option>
+                    <option value="1000">₦1,000</option>
+                    <option value="2000">₦2,000</option>
+                    <option value="5000">₦5,000</option>
+                    <option value="10000">₦10,000</option>
+                    <option value="25000">₦25,000</option>
+                    <option value="50000">₦50,000</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-pencil-alt"></i> Or Enter Custom Amount</label>
+                <div class="custom-amount-input">
+                    <input type="number" id="custom-amount" placeholder="Enter amount (₦500 - ₦500,000)">
+                    <button class="btn-primary" style="width: auto; padding: 0.8rem 1.5rem;" onclick="useCustomAmount()">Apply</button>
+                </div>
+            </div>
+            <div id="fee-display" style="background: rgba(0,0,0,0.3); border-radius: 15px; padding: 1rem; margin: 1rem 0; font-size: 0.9rem;">
+                <i class="fas fa-info-circle"></i> Fees: <span id="fee-text">Calculated after amount selection</span>
+            </div>
+            <button class="btn-primary" onclick="createPayment()"><i class="fas fa-credit-card"></i> Proceed to Payment</button>
+        </div>
+    </div>
+
+    <!-- SMS Monitor Modal -->
+    <div id="sms-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-sms"></i> Waiting for SMS...</h3>
+                <span class="close-modal" onclick="closeSMSMonitor()">&times;</span>
+            </div>
+            <div style="text-align: center; padding: 1rem;">
+                <div class="spinner"></div>
+                <p><i class="fas fa-phone"></i> <strong>Number:</strong> <span id="monitor-number"></span></p>
+                <p><i class="fas fa-hourglass-half"></i> <strong>Time remaining:</strong> <span id="timer">20:00</span></p>
+                <div style="background: rgba(0,0,0,0.5); border-radius: 20px; padding: 2rem; margin: 1rem 0;">
+                    <div id="code-display" style="font-size: 2.5rem; font-weight: 800; letter-spacing: 5px;">Waiting...</div>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn-primary" onclick="copyNumber()" style="background: #667eea;"><i class="fas fa-copy"></i> Copy Number</button>
+                    <button class="btn-primary" onclick="copyCode()" style="background: #00b894; display: none;" id="copy-code-btn"><i class="fas fa-copy"></i> Copy Code</button>
+                    <button class="btn-primary" onclick="requestAdditionalCode()" style="background: #f39c12;"><i class="fas fa-redo"></i> Get Another (+₦100)</button>
+                    <button class="btn-primary" onclick="completeOrder()" style="background: #ff4757;"><i class="fas fa-check"></i> Complete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2024 EVAS SMS - Premium Virtual Number Service | <a href="#">Terms</a> | <a href="#">Privacy</a> | <a href="https://t.me/evas_sms_bot">Contact</a></p>
+        <p style="margin-top: 0.5rem;">Powered by Paystack & Flutterwave | 24/7 Support</p>
+    </div>
+
+    <script>
+        const API_URL = '';
+        let currentUser = null;
+        let currentOrderId = null;
+        let currentNumber = null;
+        let currentCode = null;
+        let smsInterval = null;
+        let timerInterval = null;
+        let countries = [];
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        async function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!username || !password) {
+                showToast('Please enter username and password', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    currentUser = data.user;
+                    showDashboard();
+                    showToast(`Welcome back, ${username}!`, 'success');
+                } else {
+                    showToast(data.error || 'Login failed', 'error');
+                }
+            } catch (error) {
+                showToast('Network error. Please try again.', 'error');
+            }
+        }
+
+        async function register() {
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const country = document.getElementById('reg-country').value;
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
+            
+            if (!username || !email || !password) {
+                showToast('Please fill all fields', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+            if (password !== confirm) {
+                showToast('Passwords do not match', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/api/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, country, password })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    currentUser = data.user;
+                    showDashboard();
+                    showToast(`Account created! Welcome ${username}!`, 'success');
+                } else {
+                    showToast(data.error || 'Registration failed', 'error');
+                }
+            } catch (error) {
+                showToast('Network error. Please try again.', 'error');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            currentUser = null;
+            document.getElementById('auth-section').style.display = 'block';
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.getElementById('navbar').style.display = 'none';
+            showToast('Logged out successfully');
+        }
+
+        async function showDashboard() {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('dashboard-section').style.display = 'block';
+            document.getElementById('navbar').style.display = 'block';
+            document.getElementById('dynamic-content').innerHTML = '';
+            
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            document.getElementById('username-display').innerText = user.username || 'User';
+            
+            await fetchUserData();
+            await checkAdminStatus();
+        }
+
+        async function checkAdminStatus() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/admin/check`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.isAdmin) {
+                    document.getElementById('admin-link').style.display = 'inline-block';
+                }
+            } catch (error) {}
+        }
+
+        function goToAdmin() {
+            window.location.href = '/admin-login.html';
+        }
+
+        async function fetchUserData() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                document.getElementById('balance-display').innerHTML = `${data.currency === 'NGN' ? '₦' : '$'}${data.balance.toFixed(2)}`;
+                document.getElementById('vip-status').innerText = data.isReseller ? 'VIP' : 'Regular';
+            } catch (error) {}
+        }
+
+        async function showBuySms() {
+            closeModal('topup-modal');
+            document.getElementById('dynamic-content').innerHTML = '';
+            document.getElementById('buy-step-1').style.display = 'block';
+            document.getElementById('buy-step-2').style.display = 'none';
+            document.getElementById('buy-modal').classList.add('active');
+            await fetchCountries();
+        }
+
+        async function fetchCountries() {
+            try {
+                const response = await fetch(`${API_URL}/api/countries`);
+                countries = await response.json();
+                const select = document.getElementById('country-select');
+                select.innerHTML = '<option value="">Select country...</option>';
+                const topCountries = ['USA', 'United Kingdom', 'Nigeria', 'Canada', 'Kenya', 'Ghana', 'Uganda', 'Tanzania', 'South Africa'];
+                const sorted = countries.sort((a, b) => {
+                    const aTop = topCountries.some(t => a.name.includes(t));
+                    const bTop = topCountries.some(t => b.name.includes(t));
+                    if (aTop && !bTop) return -1;
+                    if (!aTop && bTop) return 1;
+                    return a.name.localeCompare(b.name);
+                });
+                sorted.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country.id;
+                    option.textContent = country.name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                showToast('Error fetching countries', 'error');
+            }
+        }
+
+        async function fetchServices() {
+            const countryId = document.getElementById('country-select').value;
+            if (!countryId) {
+                showToast('Please select a country', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/api/services/${countryId}`);
+                const services = await response.json();
+                const select = document.getElementById('service-select');
+                select.innerHTML = '<option value="">Select service...</option>';
+                const sortedServices = services.sort((a, b) => a.price - b.price);
+                sortedServices.forEach(service => {
+                    const option = document.createElement('option');
+                    option.value = service.id;
+                    option.textContent = `${service.name} - ₦${service.price.toLocaleString()}`;
+                    select.appendChild(option);
+                });
+                document.getElementById('buy-step-1').style.display = 'none';
+                document.getElementById('buy-step-2').style.display = 'block';
+            } catch (error) {
+                showToast('Error fetching services', 'error');
+            }
+        }
+
+        function goBackToCountries() {
+            document.getElementById('buy-step-1').style.display = 'block';
+            document.getElementById('buy-step-2').style.display = 'none';
+        }
+
+        async function purchaseNumber() {
+            const serviceId = document.getElementById('service-select').value;
+            const countryId = document.getElementById('country-select').value;
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/buy-number`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ serviceId, countryId })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    closeModal('buy-modal');
+                    showToast('Number purchased successfully!');
+                    fetchUserData();
+                } else {
+                    showToast(data.error || 'Purchase failed', 'error');
+                }
+            } catch (error) {
+                showToast('Error processing purchase', 'error');
+            }
+        }
+
+        function showTopUp() {
+            closeModal('buy-modal');
+            document.getElementById('topup-modal').classList.add('active');
+            document.getElementById('fee-text').innerHTML = 'Select amount to see fees';
+        }
+
+        function useCustomAmount() {
+            const customAmount = document.getElementById('custom-amount').value;
+            if (customAmount && customAmount >= 500 && customAmount <= 500000) {
+                const select = document.getElementById('amount-select');
+                select.value = customAmount;
+                showToast(`Amount set to ₦${parseInt(customAmount).toLocaleString()}`, 'success');
+            } else {
+                showToast('Please enter a valid amount (₦500 - ₦500,000)', 'error');
+            }
+        }
+
+        async function createPayment() {
+            let amount = parseInt(document.getElementById('amount-select').value);
+            const customAmount = document.getElementById('custom-amount').value;
+            
+            if (customAmount && customAmount >= 500 && customAmount <= 500000) {
+                amount = parseInt(customAmount);
+            }
+            
+            if (!amount || amount < 500 || amount > 500000) {
+                showToast('Please select a valid amount (₦500 - ₦500,000)', 'error');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/create-payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ amount })
+                });
+                const data = await response.json();
+                
+                if (data.authorization_url && data.authorization_url !== '#') {
+                    window.open(data.authorization_url, '_blank');
+                    showToast('Payment window opened. Complete payment then click Verify.');
+                } else {
+                    showToast('Payment system ready. Contact admin for live payments.', 'error');
+                }
+            } catch (error) {
+                showToast('Error creating payment', 'error');
+            }
+        }
+
+        async function showHistory() {
+            document.getElementById('dynamic-content').innerHTML = '<div class="spinner"></div>';
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/history`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const purchases = await response.json();
+                
+                if (purchases.length === 0) {
+                    document.getElementById('dynamic-content').innerHTML = '<div class="stat-card" style="text-align: center;"><p><i class="fas fa-inbox"></i> No purchases yet. Buy your first number!</p></div>';
+                } else {
+                    let html = '<div class="stat-card"><h3><i class="fas fa-history"></i> Your Purchase History</h3><div class="table-container"><table><thead><tr><th>Date</th><th>App</th><th>Number</th><th>Code</th><th>Amount</th></tr></thead><tbody>';
+                    purchases.forEach(p => {
+                        html += `<tr><td>${new Date(p.date).toLocaleDateString()}</td><td>${p.app}</td><td>${p.number}</td><td>${p.code || '<span style="color: #f39c12;">Pending</span>'}</td><td>₦${p.amount.toLocaleString()}</td></tr>`;
+                    });
+                    html += '</tbody></table></div></div>';
+                    document.getElementById('dynamic-content').innerHTML = html;
+                }
+            } catch (error) {
+                document.getElementById('dynamic-content').innerHTML = '<div class="stat-card"><p>Error loading history</p></div>';
+            }
+        }
+
+        function showReferral() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const referralLink = `${window.location.origin}?ref=${user.id}`;
+            document.getElementById('dynamic-content').innerHTML = `
+                <div class="stat-card">
+                    <h3><i class="fas fa-link"></i> Referral Program</h3>
+                    <p>Earn <strong>10% commission</strong> on every purchase your referrals make!</p>
+                    <div class="form-group">
+                        <input type="text" id="referral-link-input" value="${referralLink}" readonly style="background: rgba(0,0,0,0.5);">
+                    </div>
+                    <button class="btn-primary" onclick="copyReferralLink()"><i class="fas fa-copy"></i> Copy Referral Link</button>
+                </div>
+            `;
+        }
+
+        function copyReferralLink() {
+            const input = document.getElementById('referral-link-input');
+            input.select();
+            navigator.clipboard.writeText(input.value);
+            showToast('Referral link copied! Share with friends.');
+        }
+
+        function showVIP() {
+            document.getElementById('dynamic-content').innerHTML = `
+                <div class="stat-card">
+                    <h3><i class="fas fa-crown"></i> VIP Reseller Program</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                        <div style="background: rgba(0,0,0,0.3); border-radius: 15px; padding: 1rem; text-align: center;">
+                            <i class="fas fa-gem" style="font-size: 2rem; color: #667eea;"></i>
+                            <h4>Weekly VIP</h4>
+                            <p>40% off purchases</p>
+                            <p><strong>₦6,000</strong></p>
+                            <button class="btn-primary" onclick="upgradeVIP('weekly')">Upgrade</button>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); border-radius: 15px; padding: 1rem; text-align: center;">
+                            <i class="fas fa-crown" style="font-size: 2rem; color: gold;"></i>
+                            <h4>Monthly VIP</h4>
+                            <p>40% off + Free fees</p>
+                            <p><strong>₦20,000</strong></p>
+                            <button class="btn-primary" onclick="upgradeVIP('monthly')">Upgrade</button>
+                        </div>
+                    </div>
+                    <p><i class="fas fa-check-circle" style="color: #00b894;"></i> VIP Benefits: 40% discount, free transaction fees, priority support</p>
+                </div>
+            `;
+        }
+
+        async function upgradeVIP(plan) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/upgrade-vip`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ plan })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('VIP upgraded successfully!');
+                    fetchUserData();
+                } else {
+                    showToast(data.error || 'Insufficient balance', 'error');
+                }
+            } catch (error) {
+                showToast('Error upgrading VIP', 'error');
+            }
+        }
+
+        function showSupport() {
+            document.getElementById('dynamic-content').innerHTML = `
+                <div class="stat-card">
+                    <h3><i class="fas fa-headset"></i> Customer Support</h3>
+                    <p><i class="fas fa-envelope"></i> Email: <a href="mailto:support@evasms.com">support@evasms.com</a></p>
+                    <p><i class="fab fa-telegram"></i> Telegram: <a href="https://t.me/evas_sms_bot" target="_blank">@evas_sms_bot</a></p>
+                    <p><i class="fas fa-clock"></i> Response Time: 24-48 hours</p>
+                    <p><i class="fas fa-shield-alt"></i> For urgent issues, contact admin on Telegram.</p>
+                </div>
+            `;
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showRegister() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+        }
+
+        function showLogin() {
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('register-form').style.display = 'none';
+        }
+
+        // Check if user is logged in
+        const token = localStorage.getItem('token');
+        if (token) {
+            showDashboard();
+        } else {
+            document.getElementById('auth-section').style.display = 'block';
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.getElementById('navbar').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
