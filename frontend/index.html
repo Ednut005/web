@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>EVAS SMS - Virtual Numbers for SMS Verification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Light Mode (Default) */
+        body.light-mode {
+            --bg-primary: #f5f7fa;
+            --bg-secondary: #ffffff;
+            --bg-sidebar: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-secondary: #666;
+            --border-color: #e1e5e9;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --hover-bg: #f0f2f5;
+            --gradient-start: #667eea;
+            --gradient-end: #764ba2;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a2e;
+            --bg-sidebar: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #aaa;
+            --border-color: #2a2a3e;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --hover-bg: #1f2937;
+            --gradient-start: #667eea;
+            --gradient-end: #764ba2;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        /* Logo */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Navigation Menu */
+        .nav-menu {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .nav-link i {
+            width: 24px;
+            font-size: 1.2rem;
+        }
+
+        .nav-link:hover {
+            background: var(--hover-bg);
+            color: var(--gradient-start);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            color: var(--gradient-start);
+            border-left: 3px solid var(--gradient-start);
+        }
+
+        /* Section Headers in Sidebar */
+        .nav-section {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            padding: 1rem 1rem 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .nav-section:first-of-type {
+            margin-top: 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            padding: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle i {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Balance Card */
+        .balance-card {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .balance-info h3 {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .balance-amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: var(--gradient-start);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gradient-start);
+        }
+
+        .feature-card i {
+            font-size: 2rem;
+            color: var(--gradient-start);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Tables */
+        .table-container {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .table-container h3 {
+            margin-bottom: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* Forms */
+        .form-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--gradient-start);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: opacity 0.3s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-modal {
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--gradient-start);
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            z-index: 1100;
+            animation: slideIn 0.3s ease;
+            box-shadow: var(--card-shadow);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 200;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .menu-toggle {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 201;
+                background: var(--bg-secondary);
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                padding: 0.5rem;
+                cursor: pointer;
+            }
+        }
+
+        .menu-toggle {
+            display: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--gradient-start);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .referral-link-box {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .referral-link-box input {
+            flex: 1;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.8rem;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">
+                <img src="logo.png" alt="EVAS SMS" class="logo-img" id="logo-img" onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='flex';">
+                <div class="logo-icon" id="logo-fallback" style="display: none;"><i class="fas fa-sms"></i></div>
+                <span class="logo-text">EVAS SMS</span>
+            </div>
+
+            <!-- MAIN -->
+            <div class="nav-section">MAIN</div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a class="nav-link" onclick="showSection('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="showSection('buy-numbers')"><i class="fas fa-shopping-cart"></i> Buy Numbers</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="showSection('recharge')"><i class="fas fa-plus-circle"></i> Recharge</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="showSection('refer-earn')"><i class="fas fa-link"></i> Refer & Earn</a></li>
+            </ul>
+
+            <!-- HISTORY -->
+            <div class="nav-section">HISTORY</div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a class="nav-link" onclick="showSection('numbers-history')"><i class="fas fa-history"></i> Numbers History</a></li>
+                <li class="nav-item"><a class="nav-link" onclick="showSection('transaction-history')"><i class="fas fa-receipt"></i> Transaction History</a></li>
+            </ul>
+
+            <!-- DEVELOPER TOOL -->
+            <div class="nav-section">DEVELOPER TOOL</div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a class="nav-link" onclick="showSection('api-tools')"><i class="fas fa-code"></i> API Tools</a></li>
+            </ul>
+
+            <!-- SUPPORT -->
+            <div class="nav-section">SUPPORT</div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a class="nav-link" onclick="showSection('contact-us')"><i class="fas fa-headset"></i> Contact Us</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://t.me/evas_sms_bot" target="_blank"><i class="fab fa-telegram"></i> Join Channel</a></li>
+            </ul>
+
+            <!-- Auth Links (shown when logged out) -->
+            <div id="auth-sidebar" style="margin-top: 2rem;">
+                <div class="nav-section">ACCOUNT</div>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a class="nav-link" onclick="showLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</a></li>
+                    <li class="nav-item"><a class="nav-link" onclick="showRegister()"><i class="fas fa-user-plus"></i> Sign Up</a></li>
+                </ul>
+            </div>
+
+            <!-- Logout (shown when logged in) -->
+            <div id="logout-sidebar" style="display: none; margin-top: 2rem;">
+                <div class="nav-section">ACCOUNT</div>
+                <ul class="nav-menu">
+                    <li class="nav-item"><a class="nav-link" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <h1 class="page-title" id="page-title">Dashboard</h1>
+                <div class="top-bar-actions">
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        <i class="fas fa-sun" id="sun-icon"></i>
+                        <i class="fas fa-moon" id="moon-icon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Auth Section (shown when logged out) -->
+            <div id="auth-section">
+                <div class="form-card" style="max-width: 400px; margin: 2rem auto;">
+                    <div id="login-form">
+                        <h3 style="margin-bottom: 1.5rem;">Sign In</h3>
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="login-username" placeholder="Enter your username">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="login-password" placeholder="Enter your password">
+                        </div>
+                        <button class="btn-primary" onclick="login()">Sign In</button>
+                        <div style="text-align: center; margin-top: 1rem;">
+                            <a onclick="showRegister()" style="color: var(--gradient-start); cursor: pointer;">Don't have an account? Sign Up</a>
+                        </div>
+                    </div>
+                    <div id="register-form" style="display: none;">
+                        <h3 style="margin-bottom: 1.5rem;">Create Account</h3>
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="reg-username" placeholder="Choose a username">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="reg-email" placeholder="Enter your email">
+                        </div>
+                        <div class="form-group">
+                            <label>Country</label>
+                            <select id="reg-country">
+                                <option value="NG">🇳🇬 Nigeria (NGN)</option>
+                                <option value="US">🇺🇸 United States (USD)</option>
+                                <option value="GB">🇬🇧 United Kingdom (GBP)</option>
+                                <option value="CA">🇨🇦 Canada (CAD)</option>
+                                <option value="KE">🇰🇪 Kenya (KES)</option>
+                                <option value="GH">🇬🇭 Ghana (GHS)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="reg-password" placeholder="Create a password (min 6 chars)">
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm Password</label>
+                            <input type="password" id="reg-confirm" placeholder="Confirm your password">
+                        </div>
+                        <button class="btn-primary" onclick="register()">Create Account</button>
+                        <div style="text-align: center; margin-top: 1rem;">
+                            <a onclick="showLogin()" style="color: var(--gradient-start); cursor: pointer;">Already have an account? Sign In</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" style="display: none;">
+                <div class="balance-card">
+                    <div class="balance-info">
+                        <h3>Available Balance</h3>
+                        <div class="balance-amount" id="balance-display">$0.00</div>
+                    </div>
+                    <button class="btn-secondary" onclick="showSection('recharge')" style="background: rgba(255,255,255,0.2);">+ Top Up</button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-shopping-cart"></i>
+                        <div class="stat-value" id="total-purchases">0</div>
+                        <div class="stat-label">Total Purchases</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <div class="stat-value" id="total-referrals">0</div>
+                        <div class="stat-label">Referrals</div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-gem"></i>
+                        <div class="stat-value" id="vip-status">Regular</div>
+                        <div class="stat-label">Account Status</div>
+                    </div>
+                </div>
+
+                <div class="cards-grid">
+                    <div class="feature-card" onclick="showSection('buy-numbers')">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>Buy Numbers</h3>
+                        <p>Get virtual numbers for SMS verification</p>
+                    </div>
+                    <div class="feature-card" onclick="showSection('recharge')">
+                        <i class="fas fa-plus-circle"></i>
+                        <h3>Recharge</h3>
+                        <p>Add funds to your wallet</p>
+                    </div>
+                    <div class="feature-card" onclick="showSection('refer-earn')">
+                        <i class="fas fa-link"></i>
+                        <h3>Refer & Earn</h3>
+                        <p>Earn 10% commission</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buy Numbers Section -->
+            <div id="buy-numbers-section" style="display: none;">
+                <div class="form-card">
+                    <h3>Buy Virtual Number</h3>
+                    <div id="buy-step-1">
+                        <div class="form-group">
+                            <label>Select Country</label>
+                            <select id="country-select"></select>
+                        </div>
+                        <button class="btn-primary" onclick="fetchServices()">Continue</button>
+                    </div>
+                    <div id="buy-step-2" style="display: none; margin-top: 1rem;">
+                        <div class="form-group">
+                            <label>Select Service</label>
+                            <select id="service-select"></select>
+                        </div>
+                        <button class="btn-primary" onclick="purchaseNumber()">Purchase Now</button>
+                        <button class="btn-secondary" style="margin-top: 0.5rem; width: 100%;" onclick="goBackToCountries()">Back</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recharge Section -->
+            <div id="recharge-section" style="display: none;">
+                <div class="form-card">
+                    <h3>Top Up Wallet</h3>
+                    <div class="form-group">
+                        <label>Select Amount</label>
+                        <select id="amount-select">
+                            <option value="500">₦500</option>
+                            <option value="1000">₦1,000</option>
+                            <option value="2000">₦2,000</option>
+                            <option value="5000">₦5,000</option>
+                            <option value="10000">₦10,000</option>
+                            <option value="25000">₦25,000</option>
+                            <option value="50000">₦50,000</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Or Enter Custom Amount</label>
+                        <input type="number" id="custom-amount" placeholder="Enter amount (₦500 - ₦500,000)">
+                    </div>
+                    <button class="btn-primary" onclick="createPayment()">Proceed to Payment</button>
+                </div>
+            </div>
+
+            <!-- Refer & Earn Section -->
+            <div id="refer-earn-section" style="display: none;">
+                <div class="form-card">
+                    <h3>Refer & Earn</h3>
+                    <p>Earn <strong>10% commission</strong> on every purchase your referrals make!</p>
+                    <div class="referral-link-box">
+                        <input type="text" id="referral-link-input" readonly>
+                        <button class="btn-secondary" onclick="copyReferralLink()">Copy</button>
+                    </div>
+                    <div class="stats-grid" style="margin-top: 1rem;">
+                        <div class="stat-card">
+                            <i class="fas fa-users"></i>
+                            <div class="stat-value" id="referrals-count">0</div>
+                            <div class="stat-label">Total Referrals</div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-dollar-sign"></i>
+                            <div class="stat-value" id="earnings">₦0</div>
+                            <div class="stat-label">Total Earnings</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Numbers History Section -->
+            <div id="numbers-history-section" style="display: none;">
+                <div class="table-container">
+                    <h3>Numbers History</h3>
+                    <div id="numbers-history-content">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Transaction History Section -->
+            <div id="transaction-history-section" style="display: none;">
+                <div class="table-container">
+                    <h3>Transaction History</h3>
+                    <div id="transaction-history-content">Loading...</div>
+                </div>
+            </div>
+
+            <!-- API Tools Section -->
+            <div id="api-tools-section" style="display: none;">
+                <div class="form-card">
+                    <h3>API Tools</h3>
+                    <p>Coming soon - API access for developers</p>
+                    <div class="form-group">
+                        <label>Your API Key</label>
+                        <input type="text" id="api-key-display" readonly placeholder="Upgrade to access API">
+                    </div>
+                    <button class="btn-primary" onclick="showSection('upgrade-vip')">Upgrade for API Access</button>
+                </div>
+            </div>
+
+            <!-- Contact Us Section -->
+            <div id="contact-us-section" style="display: none;">
+                <div class="form-card">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> Email: support@evasms.com</p>
+                    <p><i class="fab fa-telegram"></i> Telegram: @evas_sms_bot</p>
+                    <p><i class="fab fa-whatsapp"></i> WhatsApp: +234 123 456 7890</p>
+                    <p><i class="fas fa-clock"></i> Response Time: 24-48 hours</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Buy Modal -->
+    <div id="buy-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Buy Number</h3>
+                <span class="close-modal" onclick="closeModal('buy-modal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label>Country</label>
+                <select id="modal-country"></select>
+            </div>
+            <div class="form-group">
+                <label>Service</label>
+                <select id="modal-service"></select>
+            </div>
+            <button class="btn-primary" onclick="purchaseNumberModal()">Purchase</button>
+        </div>
+    </div>
+
+    <!-- SMS Modal -->
+    <div id="sms-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Waiting for SMS...</h3>
+                <span class="close-modal" onclick="closeModal('sms-modal')">&times;</span>
+            </div>
+            <div style="text-align: center;">
+                <div class="spinner"></div>
+                <p><strong>Number:</strong> <span id="monitor-number"></span></p>
+                <p><strong>Time remaining:</strong> <span id="timer">20:00</span></p>
+                <div style="background: var(--bg-primary); border-radius: 12px; padding: 1rem; margin: 1rem 0;">
+                    <div id="code-display" style="font-size: 1.5rem; font-weight: 700;">Waiting...</div>
+                </div>
+                <button class="btn-secondary" onclick="copyNumber()">Copy Number</button>
+                <button class="btn-secondary" onclick="copyCode()" id="copy-code-btn" style="display: none;">Copy Code</button>
+                <button class="btn-primary" onclick="completeOrder()" style="margin-top: 0.5rem;">Complete Order</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '';
+        let currentUser = null;
+        let currentOrderId = null;
+        let currentNumber = null;
+        let currentCode = null;
+        let smsInterval = null;
+        let timerInterval = null;
+        let countries = [];
+        let services = [];
+
+        // Theme
+        function toggleTheme() {
+            if (document.body.classList.contains('dark-mode')) {
+                document.body.classList.remove('dark-mode');
+                document.body.classList.add('light-mode');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.body.classList.remove('light-mode');
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                document.body.classList.remove('dark-mode');
+            } else {
+                document.body.classList.add('dark-mode');
+                document.body.classList.remove('light-mode');
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function showSection(section) {
+            // Hide all sections
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.getElementById('buy-numbers-section').style.display = 'none';
+            document.getElementById('recharge-section').style.display = 'none';
+            document.getElementById('refer-earn-section').style.display = 'none';
+            document.getElementById('numbers-history-section').style.display = 'none';
+            document.getElementById('transaction-history-section').style.display = 'none';
+            document.getElementById('api-tools-section').style.display = 'none';
+            document.getElementById('contact-us-section').style.display = 'none';
+            
+            // Show selected section
+            document.getElementById(`${section}-section`).style.display = 'block';
+            
+            // Update page title
+            const titles = {
+                'dashboard': 'Dashboard',
+                'buy-numbers': 'Buy Numbers',
+                'recharge': 'Recharge',
+                'refer-earn': 'Refer & Earn',
+                'numbers-history': 'Numbers History',
+                'transaction-history': 'Transaction History',
+                'api-tools': 'API Tools',
+                'contact-us': 'Contact Us'
+            };
+            document.getElementById('page-title').innerText = titles[section] || 'EVAS SMS';
+            
+            // Load section data
+            if (section === 'buy-numbers') fetchCountries();
+            if (section === 'refer-earn') loadReferralData();
+            if (section === 'numbers-history') loadNumbersHistory();
+            if (section === 'transaction-history') loadTransactionHistory();
+            
+            // Close sidebar on mobile
+            if (window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.remove('open');
+            }
+        }
+
+        async function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            if (!username || !password) { showToast('Please enter username and password', 'error'); return; }
+            try {
+                const response = await fetch(`${API_URL}/api/login`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    currentUser = data.user;
+                    showDashboard();
+                    showToast(`Welcome back, ${username}!`);
+                } else { showToast(data.error || 'Login failed', 'error'); }
+            } catch (error) { showToast('Network error', 'error'); }
+        }
+
+        async function register() {
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const country = document.getElementById('reg-country').value;
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
+            if (!username || !email || !password) { showToast('Please fill all fields', 'error'); return; }
+            if (password.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
+            if (password !== confirm) { showToast('Passwords do not match', 'error'); return; }
+            try {
+                const response = await fetch(`${API_URL}/api/register`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, country, password })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    currentUser = data.user;
+                    showDashboard();
+                    showToast(`Account created! Welcome ${username}!`);
+                } else { showToast(data.error || 'Registration failed', 'error'); }
+            } catch (error) { showToast('Network error', 'error'); }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            currentUser = null;
+            document.getElementById('auth-section').style.display = 'block';
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.getElementById('auth-sidebar').style.display = 'block';
+            document.getElementById('logout-sidebar').style.display = 'none';
+            showToast('Logged out successfully');
+        }
+
+        async function showDashboard() {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('dashboard-section').style.display = 'block';
+            document.getElementById('auth-sidebar').style.display = 'none';
+            document.getElementById('logout-sidebar').style.display = 'block';
+            document.getElementById('page-title').innerText = 'Dashboard';
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            await fetchUserData();
+        }
+
+        async function fetchUserData() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                document.getElementById('balance-display').innerHTML = `${data.currency === 'NGN' ? '₦' : '$'}${data.balance.toFixed(2)}`;
+                document.getElementById('vip-status').innerText = data.isReseller ? 'VIP' : 'Regular';
+            } catch (error) {}
+        }
+
+        async function fetchCountries() {
+            try {
+                const response = await fetch(`${API_URL}/api/countries`);
+                countries = await response.json();
+                const select = document.getElementById('country-select');
+                if (select) {
+                    select.innerHTML = '<option value="">Select country...</option>';
+                    countries.forEach(country => {
+                        const option = document.createElement('option');
+                        option.value = country.id;
+                        option.textContent = country.name;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) { showToast('Error fetching countries', 'error'); }
+        }
+
+        async function fetchServices() {
+            const countryId = document.getElementById('country-select').value;
+            if (!countryId) { showToast('Select a country', 'error'); return; }
+            try {
+                const response = await fetch(`${API_URL}/api/services/${countryId}`);
+                services = await response.json();
+                const select = document.getElementById('service-select');
+                select.innerHTML = '<option value="">Select service...</option>';
+                services.forEach(service => {
+                    const option = document.createElement('option');
+                    option.value = service.id;
+                    option.textContent = `${service.name} - ₦${service.price}`;
+                    select.appendChild(option);
+                });
+                document.getElementById('buy-step-1').style.display = 'none';
+                document.getElementById('buy-step-2').style.display = 'block';
+            } catch (error) { showToast('Error fetching services', 'error'); }
+        }
+
+        function goBackToCountries() {
+            document.getElementById('buy-step-1').style.display = 'block';
+            document.getElementById('buy-step-2').style.display = 'none';
+        }
+
+        async function purchaseNumber() {
+            const serviceId = document.getElementById('service-select').value;
+            const countryId = document.getElementById('country-select').value;
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/buy-number`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ serviceId, countryId })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showToast('Number purchased!');
+                    startSMSMonitor(data.orderId, data.number);
+                    fetchUserData();
+                } else { showToast(data.error || 'Purchase failed', 'error'); }
+            } catch (error) { showToast('Error processing purchase', 'error'); }
+        }
+
+        async function createPayment() {
+            let amount = parseInt(document.getElementById('amount-select').value);
+            const customAmount = document.getElementById('custom-amount').value;
+            if (customAmount && customAmount >= 500 && customAmount <= 500000) amount = parseInt(customAmount);
+            if (!amount || amount < 500 || amount > 500000) { showToast('Select valid amount', 'error'); return; }
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/create-payment`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ amount })
+                });
+                const data = await response.json();
+                if (data.authorization_url && data.authorization_url !== '#') {
+                    window.open(data.authorization_url, '_blank');
+                    showToast('Payment window opened');
+                } else { showToast('Payment system ready', 'error'); }
+            } catch (error) { showToast('Error creating payment', 'error'); }
+        }
+
+        function startSMSMonitor(orderId, number) {
+            currentOrderId = orderId;
+            currentNumber = number;
+            document.getElementById('monitor-number').innerText = number;
+            document.getElementById('sms-modal').classList.add('active');
+            let timeLeft = 20 * 60;
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                if (timeLeft <= 0) { clearInterval(timerInterval); closeModal('sms-modal'); showToast('Time expired', 'error'); }
+            }, 1000);
+        }
+
+        function copyNumber() {
+            if (currentNumber) { navigator.clipboard.writeText(currentNumber); showToast('Number copied!'); }
+        }
+
+        function copyCode() {
+            if (currentCode) { navigator.clipboard.writeText(currentCode); showToast('Code copied!'); }
+        }
+
+        function completeOrder() {
+            if (smsInterval) clearInterval(smsInterval);
+            if (timerInterval) clearInterval(timerInterval);
+            closeModal('sms-modal');
+            showToast('Order completed!');
+        }
+
+        function copyReferralLink() {
+            const input = document.getElementById('referral-link-input');
+            input.select();
+            navigator.clipboard.writeText(input.value);
+            showToast('Link copied!');
+        }
+
+        async function loadReferralData() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            document.getElementById('referral-link-input').value = `${window.location.origin}?ref=${user.id}`;
+        }
+
+        async function loadNumbersHistory() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_URL}/api/history`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const purchases = await response.json();
+                if (purchases.length === 0) {
+                    document.getElementById('numbers-history-content').innerHTML = '<p>No purchases yet.</p>';
+                } else {
+                    let html = '<table><thead><tr><th>Date</th><th>App</th><th>Number</th><th>Code</th><th>Amount</th></tr></thead><tbody>';
+                    purchases.forEach(p => {
+                        html += `<tr><td>${new Date(p.date).toLocaleDateString()}</td><td>${p.app}</td><td>${p.number}</td><td>${p.code || 'Pending'}</td><td>₦${p.amount}</td></tr>`;
+                    });
+                    html += '</tbody></table>';
+                    document.getElementById('numbers-history-content').innerHTML = html;
+                }
+            } catch (error) { document.getElementById('numbers-history-content').innerHTML = '<p>Error loading history</p>'; }
+        }
+
+        async function loadTransactionHistory() {
+            loadNumbersHistory();
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showLogin() {
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('auth-section').style.display = 'block';
+            document.getElementById('dashboard-section').style.display = 'none';
+        }
+
+        function showRegister() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+            document.getElementById('auth-section').style.display = 'block';
+            document.getElementById('dashboard-section').style.display = 'none';
+        }
+
+        function purchaseNumberModal() {
+            // Modal purchase function
+        }
+
+        // Initialize
+        loadTheme();
+        const token = localStorage.getItem('token');
+        if (token) {
+            showDashboard();
+        } else {
+            document.getElementById('auth-section').style.display = 'block';
+            document.getElementById('dashboard-section').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
