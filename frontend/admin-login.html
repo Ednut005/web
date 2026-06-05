@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - EVAS SMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-box {
+            background: #1a1a2e;
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 350px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .login-box h2 {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        .login-box p {
+            color: #aaa;
+            margin-bottom: 2rem;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #0f0f1a;
+            border: 1px solid #2a2a3e;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+        .error {
+            color: #ff4757;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <h2>Admin Access Only</h2>
+        <p>Authorized personnel only</p>
+        <input type="password" id="admin-key" placeholder="Enter Admin Key">
+        <button onclick="verifyAdmin()">Access Panel</button>
+        <div id="error-msg" class="error"></div>
+    </div>
+
+    <script>
+        const ADMIN_KEY = 'evas_admin_2024_secure';
+        
+        function verifyAdmin() {
+            const key = document.getElementById('admin-key').value;
+            if (key === ADMIN_KEY) {
+                localStorage.setItem('isAdmin', 'true');
+                window.location.href = 'admin.html';
+            } else {
+                document.getElementById('error-msg').innerText = 'Invalid admin key';
+            }
+        }
+    </script>
+</body>
+</html>
